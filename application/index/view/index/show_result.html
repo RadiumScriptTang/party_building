@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="__CSS__/answer_question.css?V=1.4"/>
+    <link rel="stylesheet" type="text/css" href="__CSS__/reset.css"/>
+    <script type="text/javascript" src="__JS__/rem.js"></script>
+<!--    <script src="__JS__/echarts.min.js"></script>-->
+    <style>
+        .history{
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="topic">
+    <div class="entrance-bottom">
+<!--        <div class="topic-frameli"></div>-->
+        <div class="entrance-bottom-frame clearfix history">
+            <p>您答对了 <span id="n-correct-question">1</span>题</p>
+            <p>达到了 <span id="final-level">1</span>级</p>
+            <p>超过了 <span id="bypass-percentage">99</span>% 的参与者</p>
+
+            <div style="width: 200px; height: 200px" id="acc-hist"></div>
+            <div style="width: 200px; height: 200px" id="time-hist"></div>
+        </div>
+    </div>
+
+</div>
+</body>
+<!--<script src="__JS__/answer_question.js" type="text/javascript" charset="utf-8"></script>-->
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__JS__/echarts.min.js"></script>
+<script>
+
+    // 渲染历史页
+    function renderHistory(history){
+        let finalLevel = history.final_level;
+        let nQuestions = history.n_question;
+
+        // 渲染单数
+        $("#n-correct-question").text(nQuestions);
+        $("#final-level").text(finalLevel);
+
+        let accList = history.acc_by_level;
+        let timeList = history.time_by_level;
+
+        // echarts
+        echartAccOption = {
+            xAxis: {
+                type: 'category',
+                data: ['1级别', '2级', '3级', '4级', '5级']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: accList,
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                }
+            }]
+        };
+
+        echartTimeOption = {
+            xAxis: {
+                type: 'category',
+                data: ['1级别', '2级', '3级', '4级', '5级']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: timeList,
+                type: 'bar',
+                showBackground: true,
+                backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                }
+            }]
+        };
+
+        let accChart = echarts.init(document.getElementById("acc-hist"));
+        let timeChart = echarts.init(document.getElementById("time-hist"));
+        accChart.setOption(echartAccOption);
+        timeChart.setOption(echartTimeOption);
+
+    }
+
+    // 获取history
+    $.ajax({
+        url: "/api/user_control/test?id=112",
+        type: "get",
+
+        success: function (response){
+            if (response.status === 0){
+                renderHistory(response.data);
+            }
+        }
+    })
+</script>
+</html>

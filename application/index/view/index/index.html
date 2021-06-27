@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>admin</title>
+</head>
+<body>
+<button id="sign_out">退出</button>
+<p id="content">題目</p>
+<p id="op-a">A</p>
+<p id="op-b">B</p>
+<p id="op-c">C</p>
+<p id="op-d">D</p>
+<p id="answer">答案</p>
+判定等级（[1,5]）
+<input type="text" id="level">
+
+<p>ctrl + enter 提交判定</p>
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script>
+  let question = null;
+  $("#level").focus();
+  function render_question(question){
+    $("#content").text(question.content);
+    $("#op-a").text("A " + question.op_a);
+    $("#op-b").text("B " + question.op_b);
+    $("#op-c").text("C " + question.op_c);
+    $("#op-d").text("D " + question.op_d);
+    $("#answer").text("答案：" + question.answer);
+  }
+  $.ajax({
+    url: "/api/question_control/get_unleveled_question",
+    type: 'get',
+    success: function (response){
+      if (response.status === 0){
+        render_question(response.data);
+        question = response.data;
+      } else {
+        alert(response.msg);
+      }
+    }
+
+  })
+  $("#sign_out").click(function (){
+    $.ajax({
+      url: "/api/question_control/admin_sign_out",
+      success: function (response){
+        window.location.reload();
+      }
+    })
+  });
+
+  document.onkeydown = function (e){
+    if (e.ctrlKey && e.code === 'Enter'){
+      let level = parseInt($("#level").val());
+      if (level >= 1 && level <= 5){
+        $.ajax({
+          url: "/api/question_control/set_level",
+          type: "post",
+          data: {
+            id: question.id,
+            level: level
+          },
+          success: function (data){
+            window.location.reload();
+          }
+        })
+      } else {
+        alert("非法等级");
+      }
+    }
+  }
+</script>
+</body>
+</html>

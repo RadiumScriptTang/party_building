@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+</head>
+<body>
+<input type="text" placeholder="name" id="name">
+<br>
+<input type="text" placeholder="university" id="university">
+<br>
+<input type="text" placeholder="tel" id="tel">
+<br>
+<input type="email" placeholder="email" id="email">
+<br>
+<button id="submit">开始答题！</button>
+
+<div id="question" style="display: none">
+    <p id="content">題目</p>
+    <input type="radio" name="user-answer" value="A" checked/><span id="op-a">A</span> <br>
+    <input type="radio" name="user-answer" value="B" /><span id="op-b">B</span> <br>
+    <input type="radio" name="user-answer" value="C" /><span id="op-c">C</span> <br>
+    <input type="radio" name="user-answer" value="D" /><span id="op-d">D</span> <br>
+
+    <div id="answer">
+        <p id="answer-op">答案</p>
+    </div>
+    <button id="submit-answer">提交</button>
+    <button id="next-question">下一题</button>
+    <div>
+        <p>当前等级 <span id="current-level">1</span></p>
+    </div>
+
+    <div id="result" style="display: none">
+        <p>总准确度 <span id="total-acc"></span></p>
+        <p>平均用时 <span id="avg-time"></span></p>
+        <p>级别1 平均答题时间<span id="l1-time"></span>， 正确率<span id="l1-acc"></span></p>
+        <p>级别2 平均答题时间<span id="l2-time"></span>， 正确率<span id="l2-acc"></span></p>
+        <p>级别3 平均答题时间<span id="l3-time"></span>， 正确率<span id="l3-acc"></span></p>
+        <p>级别4 平均答题时间<span id="l4-time"></span>， 正确率<span id="l4-acc"></span></p>
+        <p>级别5 平均答题时间<span id="l5-time"></span>， 正确率<span id="l5-acc"></span></p>
+        <p></p>
+    </div>
+</div>
+
+
+<script src="__JS__/jquery-3.3.1.min.js"></script>
+<script>
+
+    let nameInput = $("#name");
+    let universityInput = $("#university");
+    let telInput = $("#tel");
+    let emailInput = $("#email");
+    let begin_time = null;
+
+    // 登录
+    $.ajax({
+        url: "/api/user_control/user_sign_in",
+        type: "post",
+        data: {
+            wx_id: "asdklfjlkajlo"
+        },
+        success:function (response){
+            if (response.status === 0){
+                let user = response.data;
+                nameInput.val(user.name);
+                universityInput.val(user.university);
+                telInput.val(user.tel);
+                emailInput.val(user.email);
+            }
+        }
+    });
+
+    function render_question(question){
+        $("#content").text(question.content);
+        $("#op-a").text("A " + question.op_a);
+        $("#op-b").text("B " + question.op_b);
+        $("#op-c").text("C " + question.op_c);
+        $("#op-d").text("D " + question.op_d);
+        $("#answer-op").text("答案：" + question.answer);
+        $("#next-question").hide();
+        $("#submit-answer").show();
+        begin_time = new Date();
+
+    }
+
+    function render_answer(answer, is_correct, level){
+        $("#answer-op").text(answer + (is_correct? "，回答正确": ", 回答错误"));
+        $("#submit-answer").hide();
+        $("#next-question").show();
+        $("#current-level").text(level);
+    }
+
+    function render_res(res){
+        $("#result").show();
+        $("#total-acc").text(res.total_acc);
+        $("#avg-time").text(res.avg_time);
+        for (let i = 1; i <= 5; i++) {
+            $("#l"+ i + "-time").text(res.time_by_level[i-1]);
+            $("#l"+ i + "-acc").text(res.acc_by_level[i-1]);
+        }
+    }
+    $("#submit").click(function (){
+        $("#question").show();
+        $.ajax({
+            url: "/api/user_control/update_user_info",
+            type: "post",
+            data: {
+                name: nameInput.val(),
+                university: universityInput.val(),
+                tel: telInput.val(),
+                email: emailInput.val()
+            }
+        });
+        $.ajax({
+            url: "/api/user_control/begin_transaction",
+            type: "get",
+            success: function (response){
+                if (response.status === 0){
+                    render_question(response.data);
+                }
+            }
+        })
+    });
+
+    $("#submit-answer").click(function (){
+        let user_answer = $('input:radio[name="user-answer"]:checked').val();
+        console.log(user_answer)
+        let end_time = new Date();
+        let time_variance = end_time.getTime() - begin_time.getTime();
+
+        $.ajax({
+            url: "/api/user_control/answer_question",
+            type: "post",
+            data: {
+                answer: user_answer,
+                time: time_variance
+            },
+            success: function (response){
+                if (response.status === 0){
+                    console.log(response);
+                    render_answer(response.data, response.is_correct, response.level);
+                }
+            }
+        });
+    });
+
+    $("#next-question").click(function (){
+        $.ajax({
+            url: "/api/user_control/request_next_question",
+            type: "get",
+            success:function (response){
+                if (response.status === 0){
+                    render_question(response.data);
+                } else if (response.status === 2){
+                    alert("游戏结束");
+                    render_res(response.data);
+                    console.log(response)
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

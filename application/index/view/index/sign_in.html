@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>庆祝建党100周年</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="__CSS__/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" href="__CSS__/sign_in.css?v=1.21" />
+    <script src="__JS__/flexible.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__JS__/zepto.min.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="__JS__/jquery-3.3.1.min.js"></script>
+
+
+
+    <style>
+        .dropdown-option{
+            font-size: 14px;
+            font-family: "Times New Roman";
+        }
+    </style>
+</head>
+
+<body>
+<!--logo-->
+<!--<div class="logo">-->
+<!--    <img src="__IMG__/logo.png"/>-->
+<!--</div>-->
+<!--登陆-->
+
+
+
+<div class="form">
+    <div class="item">
+        <i></i>
+        <input type="text" id="name" name="name" placeholder="姓名" required="required">
+    </div>
+    <div class="item">
+        <div class="form-group col-sm-12" style="width: 100%">
+            <select name="" id="province-select" class="form-control">
+                <option value="" disabled selected>请选择省份</option>
+            </select>
+        </div>
+    </div>
+    <div class="item">
+        <div class="form-group col-sm-12" style="width: 100%">
+            <select name="" id="city-select" class="form-control">
+                <option value="" disabled selected>城市</option>
+            </select>
+        </div>
+    </div>
+    <div class="item">
+        <div class="form-group col-sm-12" style="width: 100%">
+            <select name="" id="university-select" class="form-control">
+                <option value="" disabled selected>请选择高校</option>
+            </select>
+        </div>
+    </div>
+    <div class="item">
+        <i></i>
+        <input type="text" name="phone" id="tel" placeholder="手机号"/>
+    </div>
+    <div class="item">
+        <i></i>
+        <input type="email" id="email" placeholder="电子邮箱"/>
+    </div>
+    <div class="item">
+        <i></i>
+        <div class="form-group col-sm-6" style="width: 50%">
+            <select name="" id="year-select" class="form-control">
+                <option value="" disabled selected>入党时间</option>
+            </select>
+        </div>
+        <div class="form-group col-sm-6" style="width: 50%">
+            <select name="" id="month-select" class="form-control">
+                <option value="" disabled selected>月份</option>
+            </select>
+        </div>
+    </div>
+    <div class="submit" id="submit">
+        <button>去答题</button>
+    </div>
+</div>
+<!--<div class="register">-->
+<!--    <a href="#">忘记密码</a><span>|</span><a href="#">注册帐号</a>-->
+<!--</div>-->
+<!--<div class="other">-->
+<!--    <ul>-->
+<!--        <li><img src="__IMG__/icon-qq.png"/></li>-->
+<!--        <li><img src="__IMG__/icon-weibo.png"/></li>-->
+<!--        <li><img src="__IMG__/icon-wchat.png"/></li>-->
+<!--    </ul>-->
+<!--</div>-->
+</body>
+
+</html>
+
+<script src="__JS__/AllSchool.js?v=1.0"></script>
+<script>
+
+
+    //渲染省份
+    for (let i in province){
+        let option = document.createElement("option");
+        option.value = province[i][0]
+        option.innerText = province[i][1];
+        $("#province-select").append(option);
+    }
+
+    // 渲染城市
+    function renderCity(provinceId){
+        let cities = city[provinceId];
+        $("#city-select").empty();
+        let option = document.createElement("option");
+        option.innerText = "请选择城市";
+        option.disabled = true;
+        option.selected = true;
+        $("#city-select").append(option);
+
+        for (let i in cities){
+            let option = document.createElement("option");
+            option.value = cities[i][0]
+            option.innerText = cities[i][1];
+            $("#city-select").append(option);
+        }
+    }
+
+    // 渲染学校
+    function renderUniversity(cityId){
+        let universities = allschool[cityId];
+        $("#university-select").empty();
+        let option = document.createElement("option");
+        option.innerText = "请选择高校";
+        option.disabled = true;
+        option.selected = true;
+        $("#university-select").append(option);
+
+        for (let i in universities){
+            let option = document.createElement("option");
+            option.value = universities[i][2]
+            option.innerText = universities[i][2];
+            $("#university-select").append(option);
+        }
+    }
+
+    $("#province-select").bind("change", function (){
+        let provinceId = $("#province-select").val();
+        renderCity(provinceId);
+    });
+
+    $("#city-select").bind("change", function (){
+        let cityId = $("#city-select").val();
+        renderUniversity(cityId);
+    })
+
+    // 渲染年
+    for (let i = 2021; i >= 1921; i--){
+        let option = document.createElement("option");
+        option.value = i;
+        option.innerText = i;
+        $("#year-select").append(option);
+    }
+    // 月份
+    for (let i = 1; i <= 12; i++){
+        let option = document.createElement("option");
+        option.value = i;
+        option.innerText = i;
+        $("#month-select").append(option);
+    }
+
+
+    // 找城市
+    function findCityId(university){
+        for (let i in allschool){
+            for (let j in allschool[i]){
+                if (allschool[i][j][2] === university){
+                    return i;
+                }
+            }
+        }
+        return  null;
+    }
+
+    function findProvinceId(cityId){
+        for (let i in city){
+            for (let j in city[i]){
+                if (city[i][j][0] === cityId){
+                    return i;
+                }
+            }
+        }
+    }
+
+    // 渲染用户信息
+    function renderUser(user){
+        console.log(user);
+        // 姓名
+        $("#name").val(user.name);
+        // 电话
+        $("#tel").val(user.tel);
+        // emial
+        $("#email").val(user.email);
+        // 检索高校所在省市
+        let university = user.university;
+        // 搜索城市
+        let cityId = findCityId(university);
+        let provinceId = findProvinceId(cityId);
+
+        console.log(provinceId, cityId)
+
+        // 渲染高校
+        $("#province-select").val(provinceId);
+        renderCity(provinceId);
+        $("#city-select").val(cityId);
+        renderUniversity(cityId);
+        $("#university-select").val(university);
+
+        // 入党年月
+        if (user.enroll_year !== null){
+            $("#year-select").val(user.enroll_year);
+            $("#month-select").val(user.enroll_month);
+        }
+
+    }
+
+    // 拉取用户信息
+    // 假装有wxid
+    let wx_id = 12345;
+    $.ajax({
+        url: "/api/user_control/user_sign_in",
+        type: "post",
+        data: {
+            wx_id: wx_id
+        },
+        success: function (response){
+            renderUser(response.data);
+        }
+    });
+
+    // 更新信息
+    $("#submit").bind("click", function (){
+       let name = $("#name").val();
+       let university = $("#university-select").val();
+       let tel = $("#tel").val();
+       let email = $("#email").val();
+       let enroll_year = $("#year-select").val();
+       let enroll_month = $("#month-select").val();
+       let postData = {
+           name: name,
+           university: university,
+           tel: tel,
+           email: email,
+           enroll_year: enroll_year,
+           enroll_month : enroll_month
+       }
+
+       if (name === "" || university === null || university === ""){
+           alert("至少填写姓名与学校~");
+           return ;
+       }
+
+       $.ajax({
+           url: "/api/user_control/update_user_info",
+           type: "post",
+           data: postData,
+           success: function (response){
+               if (response.status === 0){
+                   window.location.href = "/index/index/answer_question"
+               } else {
+                   alert("服务器出错了~");
+               }
+           }
+       })
+    });
+</script>
