@@ -34,10 +34,8 @@ class QuestionControl extends Controller
         }
         $inputs = input();
         $question_id = $inputs["id"];
-        $level = $inputs["level"];
         $question = Question::get($question_id);
-        $question->level = $level;
-        $question->save();
+        $question->save($inputs);
         return [
             "status" => 0,
             "msg" => "OK"
@@ -45,7 +43,7 @@ class QuestionControl extends Controller
 
     }
 
-    public function get_unleveled_question()
+    public function get_unleveled_question($id)
     {
         $user_id = Session::get("user_id");
         if ($user_id != "admin"){
@@ -55,7 +53,7 @@ class QuestionControl extends Controller
             ];
         }
         $question = Question::get([
-            "level" => 0
+            "id" => $id
         ]);
         if ($question){
             return [

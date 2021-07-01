@@ -54,7 +54,7 @@ class TransactionRecord
             return 0;
         }
         // 如果当前等级不是5
-        if ($this->n_rest_questions < 3 && $this->current_level != 5){
+        if ($this->n_rest_questions < 2 && $this->current_level != 5){
             return 0;
         }
         return $this->current_level;

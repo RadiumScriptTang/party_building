@@ -18,6 +18,7 @@
         .splash .loading-circle>canvas.bg {z-index: 1; width: 100%; height: 100%; border: 8px solid #ddd ;}
         .splash .loading-circle>canvas.mask {z-index: 2; transform: rotate(-90deg); -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);}
         .splash .loading-circle>p {margin: 0; padding: 0;z-index: 3;  width: 100%; height: 100%; text-align: center; line-height: 60px; font-size: 18px; font-weight: lighter; color: #999;}
+        #level-indicator{position: absolute; top: 0; left: 0; margin: 10px}
     </style>
 </head>
 <body>
@@ -53,12 +54,48 @@
         </div>
     </div>
 </div>
+<canvas id="level-indicator" style="width: 60px; height: 60px"></canvas>
 </body>
 <!--<script src="__JS__/answer_question.js" type="text/javascript" charset="utf-8"></script>-->
 <script src="__JS__/jquery-3.3.1.min.js"></script>
-<script src="__JS__/echarts.min.js"></script>
-
+<script src="__JS__/wechat-jssdk.js"></script>
 <script type="text/javascript">
+
+    $.ajax({
+        type: "get",
+        url: "http://arena.fgb2019.top/api/wx/access_token?url=" + location.href,
+        success: function (data) {
+            console.log(data)
+            wx.config({
+                debug: false,
+                appId: data.appId,
+                timestamp: data.timestamp,
+                nonceStr: data.nonceStr,
+                signature: data.signature,
+                jsApiList: [
+                    "updateTimelineShareData"
+                ]
+            });
+            wx.ready(function () {
+                console.log("wx ready");
+                wx.updateTimelineShareData({
+                    title: "庆祝建党100年，快来挑战强国知识5分钟快测吧！请党放心，强国有我！", // 分享标题
+                    link: 'http://arena.fgb2019.top/index/index/sign_in?from_wx_id={$my_wx_id}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: 'http://arena.fgb2019.top/static/images/logo-share.jpg', // 分享图标
+                    success: function () {
+                        console.log("share set success");
+                    }, error: function (e) {
+                        console.log("error");
+                        // console.log(e);
+                    }
+                })
+
+            });
+            wx.error(function (res) {
+                console.log("wx error!");
+            });
+        }
+    });
 
     // 全局变量
 
@@ -70,6 +107,8 @@
     let selectListener;
     let startAnswerDate;
     let draw;
+    let currentLevel = 1;
+    let renderInterval = null;
 
     // // 先登录， 上线时删除
     // $.ajax({
@@ -162,7 +201,11 @@
         let select1 = 1
         let frame_left = 0
         document.querySelector(".entrance-bottom-frame").style.marginLeft = frame_left + "%"
-        document.querySelector(".topic-frameli").innerHTML = "第 " + "<div>" + n_current_questions + "</div>" + " 题 / 级别：" + "<div>" + question.level + "</div>";
+        document.querySelector(".topic-frameli").innerHTML = "第 " + "<div>" + n_current_questions + "</div>" + " 题";
+        clearInterval(renderInterval);
+        renderInterval = render_level_indicator(currentLevel, question.level);
+        currentLevel = question.level;
+
 
         $(".entrance-bottom-frame-line-button").bind("click", selectListener = function () {
             let n_op = parseInt($(this).attr("value"));
@@ -240,8 +283,8 @@
         let nextButton = $(".entrance-bottom-frame-line.active .entrance-next");
         nextButton.unbind("click", submitListener);
         nextButton.removeClass("entrance-submit");
-        nextButton.text("下一题");
-        nextButton.on("click", function (){
+        // nextButton.text("下一题");
+        setTimeout(function (){
             $.ajax({
                 url: "/api/user_control/request_next_question",
                 type: "get",
@@ -264,7 +307,7 @@
                     }
                 }
             })
-        });
+        }, 500);
     }
 
     function submitAnswer(timeOver=false){
@@ -284,7 +327,7 @@
             answer = "E";
         }
         if (answer === ""){
-            alert("not answered!");
+            // alert("not answered!");
             return ;
         }
 
@@ -317,62 +360,15 @@
     function renderHistory(history){
         // 屏蔽计时器
         hideTimer();
+        $("#level-indicator").hide();
         // 清空topic
         $(".topic").empty();
-        $(".topic").append($("#history"));
-        $("#history").show();
-
-        let finalLevel = history.final_level;
-        let nQuestions = history.n_question_correct;
-
-        // 渲染单数
-        $("#n-correct-question").text(nQuestions);
-        $("#final-level").text(finalLevel);
-
-        let accList = history.acc_by_level;
-        let timeList = history.time_by_level;
-
-        // echarts
-        echartAccOption = {
-            xAxis: {
-                type: 'category',
-                data: ['1级别', '2级', '3级', '4级', '5级']
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: accList,
-                type: 'bar',
-                showBackground: true,
-                backgroundStyle: {
-                    color: 'rgba(180, 180, 180, 0.2)'
-                }
-            }]
-        };
-
-        echartTimeOption = {
-            xAxis: {
-                type: 'category',
-                data: ['1级别', '2级', '3级', '4级', '5级']
-            },
-            yAxis: {
-                type: 'value'
-            },
-            series: [{
-                data: timeList,
-                type: 'bar',
-                showBackground: true,
-                backgroundStyle: {
-                    color: 'rgba(180, 180, 180, 0.2)'
-                }
-            }]
-        };
-
-        let accChart = echarts.init(document.getElementById("acc-hist"));
-        let timeChart = echarts.init(document.getElementById("time-hist"));
-        accChart.setOption(echartAccOption);
-        timeChart.setOption(echartTimeOption);
+        let shareImg = new Image();
+        shareImg.src = "/api/image_gen/share_image";
+        $(".topic").append(shareImg);
+        let center = document.createElement("center");
+        center.innerText = "长按图片，保存分享";
+        $(".topic").append(center);
 
     }
 
@@ -424,6 +420,127 @@
     function hideTimer(){
         $("#splash").hide();
     }
+
+
+    // 这里面有内存泄漏，懒得查了，整个刷新 糊弄一下
+    function render_level_indicator(previousLevel, currentLevel){
+        // 等级标识，超长代码 屎山警告
+        let canvas = document.getElementById('level-indicator');
+        let levelctx = canvas.getContext('2d');
+
+        let dpr = window.devicePixelRatio;
+
+        //range控件信息
+        let nowRange = previousLevel * 20;
+
+        //画布属性
+
+        let mW = canvas.width=canvas.clientWidth*window.devicePixelRatio;
+        let mH = canvas.height=canvas.clientHeight*window.devicePixelRatio;
+        let lineWidth = 2;
+
+        //圆属性
+        let r = mH / 2; //圆心
+        let cR = r - 3 * lineWidth; //圆半径
+
+        //Sin 曲线属性
+        let sX = 0;
+        let sY = mH / 2;
+        let axisLength = mW; //轴长
+        let waveWidth = 0.03 ; //波浪宽度,数越小越宽
+        let waveHeight = 6; //波浪高度,数越大越高
+        let speed = 0.2; //波浪速度，数越大速度越快
+        let xOffset = 0; //波浪x偏移量
+
+        levelctx.lineWidth = lineWidth;
+
+        //画圈函数
+        let IsdrawCircled = false;
+        let drawCircle = function(){
+
+            levelctx.beginPath();
+            levelctx.strokeStyle = '#FF6000';
+            levelctx.arc(r, r, cR+5, 0, 2 * Math.PI);
+            levelctx.stroke();
+            levelctx.beginPath();
+            levelctx.arc(r, r, cR, 0, 2 * Math.PI);
+            levelctx.clip();
+
+        }
+
+        //画sin 曲线函数
+        let drawSin = function(xOffset){
+            // levelctx.save();
+
+            let points=[]; //用于存放绘制Sin曲线的点
+
+            levelctx.beginPath();
+            //在整个轴长上取点
+            for(let x = sX; x < sX + axisLength; x += 20 / axisLength){
+                //此处坐标(x,y)的取点，依靠公式 “振幅高*sin(x*振幅宽 + 振幅偏移量)”
+                let y = -0.6 * Math.sin((sX  + x) * waveWidth + xOffset);
+
+                let dY = mH * (1 - nowRange / 100 );
+
+                points.push([x, dY + y * waveHeight]);
+                levelctx.lineTo(x, dY + y * waveHeight);
+            }
+
+            //封闭路径
+            levelctx.lineTo(axisLength, mH);
+            levelctx.lineTo(sX, mH);
+            levelctx.lineTo(points[0][0],points[0][1]);
+            levelctx.fillStyle = '#FF6000';
+            levelctx.fill();
+
+            // levelctx.restore();
+        };
+
+        //写百分比文本函数
+        let drawText = function(){
+            // levelctx.save();
+
+            let size = 0.6*cR;
+            levelctx.font = size + 'px Microsoft Yahei';
+            levelctx.textAlign = 'center';
+            levelctx.fillStyle = "rgba(0,0,0, 0.8)";
+            levelctx.fillText(currentLevel + "级", r, r + size / 2 - 30);
+            levelctx.fillText("难度", r, r + size / 2 + 30);
+
+            // levelctx.restore();
+        };
+
+        let render = function(){
+            levelctx.clearRect(0, 0, mW, mH);
+
+            rangeValue = 20 * currentLevel;
+
+            if(IsdrawCircled === false){
+                drawCircle();
+            }
+
+            if(nowRange <= rangeValue){
+                let tmp = 1;
+                nowRange += tmp;
+            }
+
+            if(nowRange > rangeValue){
+                let tmp = 1;
+                nowRange -= tmp;
+            }
+
+            drawSin(xOffset);
+            drawText();
+
+            xOffset += speed;
+            // requestAnimationFrame(render);
+        }
+
+        return setInterval(render, 50);
+    }
+
+
+
 
 </script>
 </html>

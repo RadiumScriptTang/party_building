@@ -6,30 +6,48 @@
 </head>
 <body>
 <button id="sign_out">退出</button>
-<p id="content">題目</p>
-<p id="op-a">A</p>
-<p id="op-b">B</p>
-<p id="op-c">C</p>
-<p id="op-d">D</p>
-<p id="answer">答案</p>
+题目id：<input id="q-id"></input> <br>
+
+<textarea id="content" rows="5" cols="100"></textarea>
+<br>
+<input id="op-a">A</input>
+<br>
+<input id="op-b">B</input>
+<br>
+<input id="op-c">C</input>
+<br>
+<input id="op-d">D</input>
+<br>
+<input id="answer">答案</input>
 判定等级（[1,5]）
 <input type="text" id="level">
 
+<br>
+<button id="next">下一题</button>
+
 <p>ctrl + enter 提交判定</p>
 <script src="__JS__/jquery-3.3.1.min.js"></script>
+<script src="__JS__/jquery.cookie.js"></script>
 <script>
     let question = null;
+    let id = $.cookie("admin_id");
+    if (id === undefined || id === null || isNaN(id)){
+        id = 2565;
+    }
     $("#level").focus();
     function render_question(question){
-        $("#content").text(question.content);
-        $("#op-a").text("A " + question.op_a);
-        $("#op-b").text("B " + question.op_b);
-        $("#op-c").text("C " + question.op_c);
-        $("#op-d").text("D " + question.op_d);
-        $("#answer").text("答案：" + question.answer);
+        console.log(question)
+        $("#content").val(question.content);
+        $("#op-a").val(question.op_a);
+        $("#op-b").val(question.op_b);
+        $("#op-c").val(question.op_c);
+        $("#op-d").val(question.op_d);
+        $("#answer").val(question.answer);
+        $("#level").val(question.level);
+        $("#q-id").val(question.id);
     }
     $.ajax({
-        url: "/api/question_control/get_unleveled_question",
+        url: "/api/question_control/get_unleveled_question?id="+id,
         type: 'get',
         success: function (response){
             if (response.status === 0){
@@ -38,9 +56,10 @@
             } else {
                 alert(response.msg);
             }
+            $.cookie("admin_id", id++);
         }
 
-    })
+    });
     $("#sign_out").click(function (){
         $.ajax({
             url: "/api/question_control/admin_sign_out",
@@ -59,6 +78,12 @@
                     type: "post",
                     data: {
                         id: question.id,
+                        content: $("#content").val(),
+                        op_a: $("#op-a").val(),
+                        op_b: $("#op-b").val(),
+                        op_c: $("#op-c").val(),
+                        op_d: $("#op-d").val(),
+                        answer: $("#answer").val(),
                         level: level
                     },
                     success: function (data){
@@ -70,6 +95,35 @@
             }
         }
     }
+
+    $("#next").click(function (){
+        let level = parseInt($("#level").val());
+        id = parseInt($("#q-id").val());
+        $.cookie("admin_id", id++);
+
+        if (level >= 1 && level <= 5){
+            $.ajax({
+                url: "/api/question_control/set_level",
+                type: "post",
+                data: {
+                    id: question.id,
+                    content: $("#content").val(),
+                    op_a: $("#op-a").val(),
+                    op_b: $("#op-b").val(),
+                    op_c: $("#op-c").val(),
+                    op_d: $("#op-d").val(),
+                    answer: $("#answer").val(),
+                    level: level
+                },
+                success: function (data){
+                    window.location.reload();
+                }
+            })
+        } else {
+            alert("非法等级");
+        }
+        $.cookie("admin_id", id++);
+    });
 </script>
 </body>
 </html>

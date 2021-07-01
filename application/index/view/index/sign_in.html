@@ -3,275 +3,363 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>庆祝建党100周年</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>建党百年 强国知识5分钟快测</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
     <link rel="stylesheet" type="text/css" href="__CSS__/bootstrap.min.css">
 
-    <link rel="stylesheet" type="text/css" href="__CSS__/sign_in.css?v=1.21" />
+    <link rel="stylesheet" type="text/css" href="__CSS__/sign_in.css?v=1.29"/>
     <script src="__JS__/flexible.js" type="text/javascript" charset="utf-8"></script>
     <script src="__JS__/zepto.min.js" type="text/javascript" charset="utf-8"></script>
 
     <script src="__JS__/jquery-3.3.1.min.js"></script>
-
+    <script src="__JS__/bootstrap-3.3.7.min.js"></script>
 
 
     <style>
-        .dropdown-option{
+        .dropdown-option {
             font-size: 14px;
             font-family: "Times New Roman";
         }
+
+        .footer {
+            font-size: 12px;
+            color: darkred;
+            bottom: 0;
+            text-align: center;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+
+        .footer a {
+            font-size: 12px;
+            color: darkred;
+        }
+
+        .footer span{
+            font-size: 16px;
+            color: #ea1515;
+        }
+        .modal-content {
+            color: black;
+            font-size: 14px;
+        }
+
+        #submit{
+            padding: 0.3rem;
+        }
+
+        .form{
+            padding-top: 0;
+        }
+
     </style>
 </head>
 
 <body>
-<!--logo-->
-<!--<div class="logo">-->
-<!--    <img src="__IMG__/logo.png"/>-->
-<!--</div>-->
+<div class="logo">
+    <img src="__IMG__/logo.png"/>
+</div>
 <!--登陆-->
 
 
-
 <div class="form">
-    <div class="item">
+    <div class="item form-group">
         <i></i>
-        <input type="text" id="name" name="name" placeholder="姓名" required="required">
-    </div>
-    <div class="item">
-        <div class="form-group col-sm-12" style="width: 100%">
-            <select name="" id="province-select" class="form-control">
-                <option value="" disabled selected>请选择省份</option>
-            </select>
-        </div>
-    </div>
-    <div class="item">
-        <div class="form-group col-sm-12" style="width: 100%">
-            <select name="" id="city-select" class="form-control">
-                <option value="" disabled selected>城市</option>
-            </select>
-        </div>
-    </div>
-    <div class="item">
-        <div class="form-group col-sm-12" style="width: 100%">
-            <select name="" id="university-select" class="form-control">
-                <option value="" disabled selected>请选择高校</option>
-            </select>
-        </div>
+        <input type="text" id="name" name="name" placeholder="姓名（必填）" required="required">
     </div>
     <div class="item">
         <i></i>
-        <input type="text" name="phone" id="tel" placeholder="手机号"/>
+        <select name="" id="region-select" class="form-control">
+            <option value="" disabled selected>请选择地区（必填）</option>
+        </select>
+    </div>
+    <!--    <div class="item">-->
+    <!--        <div class="form-group col-sm-12" style="width: 100%">-->
+    <!--            <select name="" id="city-select" class="form-control">-->
+    <!--                <option value="" disabled selected>城市</option>-->
+    <!--            </select>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="item">-->
+    <!--        <div class="form-group col-sm-12" style="width: 100%">-->
+    <!--            <select name="" id="university-select" class="form-control">-->
+    <!--                <option value="" disabled selected>请选择高校</option>-->
+    <!--            </select>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <div class="item">
+        <i></i>
+        <input type="text" name="phone" id="tel" placeholder="手机号（选填）"/>
     </div>
     <div class="item">
         <i></i>
-        <input type="email" id="email" placeholder="电子邮箱"/>
+        <input type="text" id="university" placeholder="单位（选填）"/>
     </div>
     <div class="item">
         <i></i>
-        <div class="form-group col-sm-6" style="width: 50%">
-            <select name="" id="year-select" class="form-control">
-                <option value="" disabled selected>入党时间</option>
-            </select>
-        </div>
-        <div class="form-group col-sm-6" style="width: 50%">
-            <select name="" id="month-select" class="form-control">
-                <option value="" disabled selected>月份</option>
-            </select>
-        </div>
+        <select name="" id="year-select" class="form-control">
+            <option value="0" disabled selected="selected">入党时间（选填）</option>
+        </select>
     </div>
     <div class="submit" id="submit">
         <button>去答题</button>
     </div>
 </div>
-<!--<div class="register">-->
-<!--    <a href="#">忘记密码</a><span>|</span><a href="#">注册帐号</a>-->
-<!--</div>-->
-<!--<div class="other">-->
-<!--    <ul>-->
-<!--        <li><img src="__IMG__/icon-qq.png"/></li>-->
-<!--        <li><img src="__IMG__/icon-weibo.png"/></li>-->
-<!--        <li><img src="__IMG__/icon-wchat.png"/></li>-->
-<!--    </ul>-->
-<!--</div>-->
+<div class="footer">
+    <span><strong>快测--AI驱动的快速分级测试</strong></span>
+
+    <br>
+    <a href="javascript:void (0)" data-toggle="modal" data-target="#tech-support">技术支持</a> <span>|</span> <a
+        href="javascript:void (0)" data-toggle="modal" data-target="#rules">答题规则</a>
+</div>
+
+<!--模态框1-技术支持-->
+<div class="modal fade" id="tech-support" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    建党百年 强国知识5分钟快测
+                </h4>
+            </div>
+            <div class="modal-body">
+                <strong>技术支持：</strong><br>
+                孔令和 共产党员 linghe.kong@sjtu.edu.cn <br>
+                雷佳乐 共青团员 RadiumScriptTang@163.com <br>
+                <br>
+                <strong>平台支持：</strong> <br>
+                上海交通大学计算机科学与工程系 <br>
+                <br>
+                <strong>题目来源：</strong><br>
+                《学习强国》 <br>
+                <br>
+                <strong>精神来源：</strong> <br>
+                党史精神 <br>
+                <br>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!--模态框2-答题规则-->
+<div class="modal fade" id="rules" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title">
+                    答题规则
+                </h4>
+            </div>
+            <div class="modal-body">
+                1.用户需要填写 <strong>姓名及地区</strong>参与答题活动 <br>
+                2.点击去答题后，进入答题环节 <br>
+                3.用户须在规定时间内作答，超时等同于答错 <br>
+                4.提交前可以更改选择的答案，提交后用户可以看到正确答案，并将自动跳转下一题 <br>
+                5.题目难度分为5个等级，当用户在当前等级中的3题中答对两题后，会进入下一等级，若连续答错两题则下降一个等级 <br>
+                6.留下联系方式有更高概率获奖~
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 </body>
 
 </html>
 
-<script src="__JS__/AllSchool.js?v=1.0"></script>
+<script src="__JS__/jquery.cookie.js"></script>
+<script src="__JS__/wechat-jssdk.js"></script>
 <script>
 
 
-    //渲染省份
-    for (let i in province){
-        let option = document.createElement("option");
-        option.value = province[i][0]
-        option.innerText = province[i][1];
-        $("#province-select").append(option);
-    }
+    let regions = ["中国(亚洲)", "阿尔巴尼亚(亚洲)", "阿尔及利亚(非洲)", "阿富汗(亚洲)", "阿根廷(南美洲)", "爱尔兰(欧洲)", "埃及(非洲)", "埃塞俄比亚(非洲)", "爱沙尼亚(欧洲)", "阿联酋(亚洲)", "阿鲁巴(北美洲)", "阿曼(亚洲)", "安道尔(欧洲)", "安哥拉(非洲)", "安圭拉(北美洲)", "安提瓜和巴布达(北美洲)", "澳大利亚(大洋洲)", "奥地利(欧洲)", "阿塞拜疆(亚洲)", "巴巴多斯(北美洲)", "巴布亚新几内亚(大洋洲)", "巴哈马(北美洲)", "白俄罗斯(欧洲)", "百慕大(北美洲)", "巴基斯坦(亚洲)", "巴拉圭(南美洲)", "巴林(亚洲)", "巴拿马(北美洲)", "保加利亚(欧洲)", "巴西(南美洲)", "北冰洋", "北马里亚纳(大洋洲)", "贝宁(非洲)", "比利时(欧洲)", "冰岛(欧洲)", "博茨瓦纳(非洲)", "波多黎各(北美洲)", "波黑(欧洲)", "波兰(欧洲)", "玻利维亚(南美洲)", "伯利兹(北美洲)", "不丹(亚洲)", "布基纳法索(非洲)", "布隆迪(非洲)", "布维岛(南极洲)", "朝鲜(亚洲)", "赤道几内亚(非洲)", "丹麦(欧洲)", "大西洋", "德国(欧洲)", "东帝汶(亚洲)", "多哥(非洲)", "多米尼加(北美洲)", "多米尼克(北美洲)", "厄瓜多尔(南美洲)", "厄立特里亚(非洲)", "俄罗斯联邦(欧洲)", "法国(欧洲)", "法罗群岛(欧洲)", "梵蒂冈(欧洲)", "法属波利尼西亚(大洋洲)", "法属圭亚那(南美洲)", "法属南部领地(非洲)", "斐济(大洋洲)", "菲律宾(亚洲)", "芬兰(欧洲)", "佛得角(非洲)", "福克兰群岛（马尔维纳斯）(南美洲)", "冈比亚(非洲)", "刚果（布）(非洲)", "刚果（金）(非洲)", "格陵兰(北美洲)", "格林纳达(北美洲)", "格鲁吉亚(亚洲)", "哥伦比亚(南美洲)", "哥斯达黎加(北美洲)", "瓜德罗普(北美洲)", "关岛(大洋洲)", "古巴(北美洲)", "圭亚那(南美洲)", "海地(北美洲)", "韩国(亚洲)", "哈萨克斯坦(亚洲)", "赫德岛和麦克唐纳岛", "黑山(欧洲)", "荷兰(欧洲)", "荷属安的列斯(北美洲)", "洪都拉斯(北美洲)", "加纳(非洲)", "加拿大(北美洲)", "柬埔寨(亚洲)", "加蓬(非洲)", "吉布提(非洲)", "捷克(欧洲)", "吉尔吉斯斯坦(亚洲)", "基里巴斯(大洋洲)", "津巴布韦(非洲)", "几内亚(非洲)", "几内亚比绍(非洲)", "开曼群岛(北美洲)", "喀麦隆(非洲)", "卡塔尔(亚洲)", "科科斯（基林）群岛(大洋洲)", "克罗地亚(欧洲)", "科摩罗(非洲)", "肯尼亚(非洲)", "科特迪瓦(非洲)", "科威特(亚洲)", "库克群岛(大洋洲)", "莱索托(非洲)", "老挝(亚洲)", "拉脱维亚(欧洲)", "黎巴嫩(亚洲)", "利比里亚(非洲)", "利比亚(非洲)", "列支敦士登(欧洲)", "立陶宛(欧洲)", "留尼汪(非洲)", "罗马尼亚(欧洲)", "卢森堡(亚洲)", "卢旺达(非洲)", "马达加斯加(非洲)", "马尔代夫(亚洲)", "马耳他(欧洲)", "马来西亚(亚洲)", "马拉维(非洲)", "马里(非洲)", "毛里求斯(非洲)", "毛里塔尼亚(非洲)", "马其顿(欧洲)", "马绍尔群岛(大洋洲)", "马提尼克(北美洲)", "马约特(非洲)", "美国(北美洲)", "美国(关岛)", "美属萨摩亚(大洋洲)", "美属维尔京群岛(北美洲)", "蒙古(亚洲)", "孟加拉国(亚洲)", "蒙特塞拉特(北美洲)", "缅甸(亚洲)", "密克罗尼西亚联邦(大洋洲)", "秘鲁(南美洲)", "摩尔多瓦(欧洲)", "摩洛哥(非洲)", "摩纳哥(欧洲)", "莫桑比亚(非洲)", "墨西哥(北美洲)", "纳米比亚(非洲)", "南非(非洲)", "南极洲(南极洲)", "南乔治亚岛和南桑德韦奇岛(南极洲)", "南斯拉夫(欧洲)", "瑙鲁(大洋洲)", "尼泊尔(亚洲)", "尼加拉瓜(北美洲)", "尼日尔(非洲)", "尼日利亚(非洲)", "纽埃(大洋洲)", "诺福克岛(大洋洲)", "挪威(欧洲)", "帕劳(大洋洲)", "皮特凯恩(大洋洲)", "葡萄牙(欧洲)", "日本(亚洲)", "瑞典(欧洲)", "瑞士(欧洲)", "萨尔瓦多(北美洲)", "塞尔维亚(欧洲)", "塞拉利昂(非洲)", "塞内加尔(非洲)", "塞浦路斯(亚洲)", "塞舌尔(非洲)", "萨摩亚(大洋洲)", "沙特(亚洲)", "圣诞岛(大洋洲)", "圣多美和普林西比(非洲)", "圣赫勒拿(非洲)", "圣基茨和尼维斯(北美洲)", "圣卢西亚(北美洲)", "圣马力诺(欧洲)", "圣皮埃尔和密克隆(北美洲)", "圣文森特和格林纳丁斯(北美洲)", "斯里兰卡(亚洲)", "斯洛伐克(欧洲)", "斯洛文尼亚(欧洲)", "斯瓦尔巴岛和扬马延岛(欧洲)", "斯威士兰(非洲)", "苏丹(非洲)", "苏里南(南美洲)", "所罗门群岛(大洋洲)", "索马里(非洲)", "泰国(亚洲)", "太平洋", "塔吉克斯坦(亚洲)", "汤加(大洋洲)", "坦桑尼亚(非洲)", "特克斯和凯科斯群岛(北美洲)", "特立尼达和多巴哥(北美洲)", "土耳其(亚洲)", "土库曼斯坦(亚洲)", "突尼斯(非洲)", "托克劳(大洋洲)", "图瓦卢(大洋洲)", "瓦利斯和富图纳(大洋洲)", "瓦努阿图(大洋洲)", "危地马拉(北美洲)", "委内瑞拉(北美洲)", "文莱(亚洲)", "乌干达(非洲)", "乌克兰(欧洲)", "乌拉圭(南美洲)", "乌兹别克斯坦(亚洲)", "西班牙(欧洲)", "希腊(欧洲)", "新加坡(亚洲)", "新喀里多尼亚(大洋洲)", "新西兰(大洋洲)", "匈牙利(欧洲)", "西撒哈拉(非洲)", "叙利亚(亚洲)", "牙买加(北美洲)", "亚美尼亚(亚洲)", "也门(亚洲)", "意大利(欧洲)", "伊拉克(亚洲)", "伊朗(亚洲)", "印度(亚洲)", "印度尼西亚(亚洲)", "印度洋", "英国(欧洲)", "英属维尔京群岛(北美洲)", "英属印度洋领地(非洲)", "以色列(亚洲)", "约旦(亚洲)", "越南(亚洲)", "赞比亚(非洲)", "乍得(非洲)", "直布罗陀(欧洲)", "智利(南美洲)", "中非(非洲)"];
 
-    // 渲染城市
-    function renderCity(provinceId){
-        let cities = city[provinceId];
-        $("#city-select").empty();
-        let option = document.createElement("option");
-        option.innerText = "请选择城市";
-        option.disabled = true;
-        option.selected = true;
-        $("#city-select").append(option);
-
-        for (let i in cities){
+    // 渲染地区
+    function renderRegion() {
+        for (let i in regions) {
             let option = document.createElement("option");
-            option.value = cities[i][0]
-            option.innerText = cities[i][1];
-            $("#city-select").append(option);
+            option.value = regions[i];
+            option.innerText = regions[i];
+            $("#region-select").append(option);
         }
     }
 
-    // 渲染学校
-    function renderUniversity(cityId){
-        let universities = allschool[cityId];
-        $("#university-select").empty();
-        let option = document.createElement("option");
-        option.innerText = "请选择高校";
-        option.disabled = true;
-        option.selected = true;
-        $("#university-select").append(option);
-
-        for (let i in universities){
-            let option = document.createElement("option");
-            option.value = universities[i][2]
-            option.innerText = universities[i][2];
-            $("#university-select").append(option);
-        }
-    }
-
-    $("#province-select").bind("change", function (){
-        let provinceId = $("#province-select").val();
-        renderCity(provinceId);
-    });
-
-    $("#city-select").bind("change", function (){
-        let cityId = $("#city-select").val();
-        renderUniversity(cityId);
-    })
+    renderRegion();
 
     // 渲染年
-    for (let i = 2021; i >= 1921; i--){
+    for (let i = 2021; i >= 1921; i--) {
         let option = document.createElement("option");
         option.value = i;
         option.innerText = i;
         $("#year-select").append(option);
     }
-    // 月份
-    for (let i = 1; i <= 12; i++){
-        let option = document.createElement("option");
-        option.value = i;
-        option.innerText = i;
-        $("#month-select").append(option);
-    }
+    // // 月份
+    // for (let i = 1; i <= 12; i++){
+    //     let option = document.createElement("option");
+    //     option.value = i;
+    //     option.innerText = i;
+    //     $("#month-select").append(option);
+    // }
 
 
-    // 找城市
-    function findCityId(university){
-        for (let i in allschool){
-            for (let j in allschool[i]){
-                if (allschool[i][j][2] === university){
-                    return i;
-                }
-            }
-        }
-        return  null;
-    }
-
-    function findProvinceId(cityId){
-        for (let i in city){
-            for (let j in city[i]){
-                if (city[i][j][0] === cityId){
-                    return i;
-                }
-            }
-        }
-    }
+    // // 找城市
+    // function findCityId(university){
+    //     for (let i in allschool){
+    //         for (let j in allschool[i]){
+    //             if (allschool[i][j][2] === university){
+    //                 return i;
+    //             }
+    //         }
+    //     }
+    //     return  null;
+    // }
+    //
+    // function findProvinceId(cityId){
+    //     for (let i in city){
+    //         for (let j in city[i]){
+    //             if (city[i][j][0] === cityId){
+    //                 return i;
+    //             }
+    //         }
+    //     }
+    // }
 
     // 渲染用户信息
-    function renderUser(user){
+    function renderUser(user) {
         console.log(user);
         // 姓名
         $("#name").val(user.name);
         // 电话
         $("#tel").val(user.tel);
         // emial
-        $("#email").val(user.email);
-        // 检索高校所在省市
-        let university = user.university;
-        // 搜索城市
-        let cityId = findCityId(university);
-        let provinceId = findProvinceId(cityId);
+        $("#university").val(user.university);
+        // // 检索高校所在省市
+        // let university = user.university;
+        // // 搜索城市
+        // let cityId = findCityId(university);
+        // let provinceId = findProvinceId(cityId);
 
-        console.log(provinceId, cityId)
 
-        // 渲染高校
-        $("#province-select").val(provinceId);
-        renderCity(provinceId);
-        $("#city-select").val(cityId);
-        renderUniversity(cityId);
-        $("#university-select").val(university);
+        // // 渲染高校
+        // $("#province-select").val(provinceId);
+        // renderCity(provinceId);
+        // $("#city-select").val(cityId);
+        // renderUniversity(cityId);
+        // $("#university-select").val(university);
 
+        // 渲染地区
+        $("#region-select").val(user.region);
         // 入党年月
-        if (user.enroll_year !== null){
+        if (user.enroll_year !== null) {
             $("#year-select").val(user.enroll_year);
-            $("#month-select").val(user.enroll_month);
+            // $("#month-select").val(user.enroll_month);
+        } else {
+            $("#year-select").val("0");
         }
+
+        // 永久保存wxid
+        $.cookie("wx_id", user.wx_id);
 
     }
 
     // 拉取用户信息
     // 假装有wxid
-    let wx_id = 12345;
+    let wx_id = $.cookie("wx_id");
+    if (wx_id === undefined || wx_id === null) {
+        wx_id = null;
+    }
+    if (wx_id === null){
+        $("#year-select").val("0");
+    }
+
     $.ajax({
         url: "/api/user_control/user_sign_in",
         type: "post",
         data: {
-            wx_id: wx_id
+            wx_id: wx_id,
+            from_wx_id: "{$from_wx_id}"
         },
-        success: function (response){
+        success: function (response) {
             renderUser(response.data);
+            wx_id = response.data.wx_id;
+        }
+    });
+
+
+
+    // 接入微信
+    $.ajax({
+        type: "get",
+        url: "http://arena.fgb2019.top/api/wx/access_token?url=" + location.href,
+        success: function (data) {
+            console.log(data)
+            wx.config({
+                debug: false,
+                appId: data.appId,
+                timestamp: data.timestamp,
+                nonceStr: data.nonceStr,
+                signature: data.signature,
+                jsApiList: [
+                    "updateTimelineShareData"
+                ]
+            });
+            wx.ready(function () {
+                console.log("wx ready");
+                wx.updateTimelineShareData({
+                    title: "庆祝建党100年，快来挑战强国知识5分钟快测吧！请党放心，强国有我！", // 分享标题
+                    link: 'http://arena.fgb2019.top/index/index/sign_in?from_wx_id=' + wx_id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: 'http://arena.fgb2019.top/static/images/logo-share.jpg', // 分享图标
+                    success: function () {
+                        console.log("share set success");
+                    }, error: function (e) {
+                        console.log("error");
+                        // console.log(e);
+                    }
+                })
+
+            });
+            wx.error(function (res) {
+                console.log("wx error!");
+            });
         }
     });
 
     // 更新信息
-    $("#submit").bind("click", function (){
-       let name = $("#name").val();
-       let university = $("#university-select").val();
-       let tel = $("#tel").val();
-       let email = $("#email").val();
-       let enroll_year = $("#year-select").val();
-       let enroll_month = $("#month-select").val();
-       let postData = {
-           name: name,
-           university: university,
-           tel: tel,
-           email: email,
-           enroll_year: enroll_year,
-           enroll_month : enroll_month
-       }
+    $("#submit").bind("click", function () {
+        let name = $("#name").val();
+        let region = $("#region-select").val();
+        let tel = $("#tel").val();
+        let universtiy = $("#university").val();
+        let enroll_year = $("#year-select").val();
+        // let enroll_month = $("#month-select").val();
+        let postData = {
+            name: name,
+            region: region,
+            tel: tel,
+            university: universtiy,
+            enroll_year: enroll_year
+        }
 
-       if (name === "" || university === null || university === ""){
-           alert("至少填写姓名与学校~");
-           return ;
-       }
+        if (name === "" || region === null || region === "") {
+            alert("至少填写姓名与地区~");
+            return;
+        }
 
-       $.ajax({
-           url: "/api/user_control/update_user_info",
-           type: "post",
-           data: postData,
-           success: function (response){
-               if (response.status === 0){
-                   window.location.href = "/index/index/answer_question"
-               } else {
-                   alert("服务器出错了~");
-               }
-           }
-       })
+        $.ajax({
+            url: "/api/user_control/update_user_info",
+            type: "post",
+            data: postData,
+            success: function (response) {
+                if (response.status === 0) {
+                    window.location.href = "/index/index/answer_question"
+                } else {
+                    alert("服务器出错了~");
+                }
+            }
+        })
     });
 </script>

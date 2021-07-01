@@ -10,14 +10,13 @@ class Wx extends Controller
     public function access_token()
     {
         $url = input("url");
-        $jssdk = new JSSDK("wxf994642134c1b2ed", "4e35ca6c15d7fc6922805630970de1b1");
+        $jssdk = new JSSDK("wx325c2d1d888031de", "d8e828fac48fa928772e85760575b24e");
         $signPackage = $jssdk->GetSignPackage($url);
         return [
             "appId" => $signPackage["appId"],
             "nonceStr" => $signPackage["nonceStr"],
             "timestamp" => $signPackage["timestamp"],
-            "signature" => $signPackage["signature"],
-            "openid" => $signPackage["openid"]
+            "signature" => $signPackage["signature"]
         ];
     }
 

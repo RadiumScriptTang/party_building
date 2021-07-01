@@ -14,6 +14,12 @@ class Index extends Controller
     }
     public function sign_in()
     {
+        $inputs = input();
+        if (array_key_exists("from_wx_id", $inputs)){
+            $this->assign("from_wx_id", $inputs["from_wx_id"]);
+        } else {
+            $this->assign("from_wx_id", "");
+        }
         return $this->fetch();
     }
 
@@ -32,6 +38,7 @@ class Index extends Controller
 
     public function answer_question()
     {
+        $this->assign("my_wx_id", Session::get("wx_id"));
         return $this->fetch();
     }
 
@@ -49,4 +56,10 @@ class Index extends Controller
     {
         return $this->fetch();
     }
+
+    public function qr_test()
+    {
+        return $this->fetch();
+    }
+
 }

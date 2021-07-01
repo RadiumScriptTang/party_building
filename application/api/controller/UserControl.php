@@ -22,20 +22,29 @@ class UserControl extends Controller
         ]);
 
 
-        if (!$user) {
+        if (!$user || $wx_id == null) {
             $user = User::create([
                 "name" => "",
                 "tel" => "",
                 "wx_id" => $wx_id,
                 "email" => "",
-                "university" => ""
+                "university" => "",
+                "region" => "",
+                "enroll_year" => 0
             ]);
+            $wx_id = sha1($user->id);
+            $user->wx_id = $wx_id;
+            if (array_key_exists("from_wx_id", $inputs)) {
+                $user->from_wx_id = $inputs["from_wx_id"];
+            }
+            $user->save();
         }
 
         // 上Session
         Session::set("user_id", $user->id);
         Session::set("user_name", $user->name);
-        Session::set("user_university", $user->university);
+        Session::set("wx_id", $user->wx_id);
+//        Session::set("user_university", $user->university);
 
         return [
             "status" => 0,
@@ -48,7 +57,9 @@ class UserControl extends Controller
     {
         Session::set("user_id", null);
         Session::set("user_name", null);
-        Session::set("user_university", null);
+        Session::set("wx_id", null);
+
+//        Session::set("user_university", null);
     }
 
     // 用户点击开始答题时执行
@@ -56,22 +67,24 @@ class UserControl extends Controller
     {
         $inputs = input();
         $name = $inputs["name"];
-        $university = $inputs["university"];
+        $region = $inputs["region"];
         $tel = $inputs["tel"];
-        $email = $inputs["email"];
+        $university = $inputs["university"];
         $year = $inputs["enroll_year"];
-        $month = $inputs["enroll_month"];
+//        $month = $inputs["enroll_month"];
 
         $user_id = Session::get("user_id");
         $user = User::get($user_id);
         $user->save([
             "name" => $name,
-            "university" => $university,
+            "region" => $region,
             "tel" => $tel,
-            "email" => $email,
-            "enroll_year" => $year,
-            "enroll_month" => $month
+            "university" => $university,
+            "enroll_year" => $year
         ]);
+
+        Session::set("user_name", $user->name);
+
         return [
             "status" => 0,
             "msg" => "updated"
@@ -187,7 +200,12 @@ class UserControl extends Controller
             $attempt->final_level = $history["final_level"];
             $attempt->final_acc = $history["final_acc"];
             $attempt->final_time = $history["final_time"];
+            $attempt->final_correct = $history["n_question_correct"];
+            $attempt->rank = $history["rank"];
             $attempt->save();
+
+            // 生成信息session片段
+            $this->set_share_image_info($attempt->final_correct, $attempt->final_level, $attempt->final_correct, $attempt->final_time, $attempt->rank);
 
             // 答题结束 释放record
             Session::set("record", null);
@@ -215,7 +233,7 @@ class UserControl extends Controller
         $id = input("id");
         return [
             "status" => 0,
-            "data" =>$this->summary_history($id)
+            "data" => $this->summary_history($id)
         ];
     }
 
@@ -228,42 +246,69 @@ class UserControl extends Controller
         $n_question_by_level = [0, 0, 0, 0, 0];
         $n_correct_question_by_level = [0, 0, 0, 0, 0];
         $total_time_by_level = [0, 0, 0, 0, 0];
-        $acc_list = [0,0,0,0,0];
-        $time_consumed_list=[0,0,0,0,0];
+        $acc_list = [0, 0, 0, 0, 0];
+        $time_consumed_list = [0, 0, 0, 0, 0];
         $total_acc = 0;
         $total_time = 0;
         $total_correct = 0;
 
         $final_level = 1;
 
-        foreach ($attempt_detail_list as $detail){
+        $question_levels = [];
+
+        foreach ($attempt_detail_list as $detail) {
             $level = $detail->level;
-            $final_level = max($final_level, $level);
             $is_correct = $detail->is_correct;
             $time_consumed = $detail->time_consumed;
-            $n_question_by_level[$level-1]++;
-            if ($is_correct){
-                $n_correct_question_by_level[$level - 1] ++;
-                $total_time_by_level[$level-1] += $time_consumed;
+            $n_question_by_level[$level - 1]++;
+            if ($is_correct) {
+                $n_correct_question_by_level[$level - 1]++;
+                $total_time_by_level[$level - 1] += $time_consumed;
                 $total_time += $time_consumed;
-                $total_correct ++;
+                $total_correct++;
             }
 
-            $total_acc += $is_correct? 1:0;
-
+            $total_acc += $is_correct ? 1 : 0;
+            array_push($question_levels, $detail->level);
         }
-        for($i = 0; $i < 5; $i++){
 
-            $acc_list[$i] = $n_question_by_level[$i] == 0? "-":$n_correct_question_by_level[$i] / $n_question_by_level[$i];
-            $time_consumed_list[$i] = $n_correct_question_by_level[$i] == 0? "-":$total_time_by_level[$i] / $n_correct_question_by_level[$i];
+        $final_level = array_pop($question_levels);
+
+        for ($i = 0; $i < 5; $i++) {
+
+            $acc_list[$i] = $n_question_by_level[$i] == 0 ? "-" : $n_correct_question_by_level[$i] / $n_question_by_level[$i];
+            $time_consumed_list[$i] = $n_correct_question_by_level[$i] == 0 ? "-" : $total_time_by_level[$i] / $n_correct_question_by_level[$i];
         }
 
         $total_acc /= array_sum($n_question_by_level);
-        $total_time = $total_correct == 0? "-" : $total_time / $total_correct;
+        $total_time = $total_correct == 0 ? "-" : $total_time / $total_correct;
 
         $final_acc = $acc_list[$final_level - 1];
         $final_time = $time_consumed_list[$final_level - 1];
 
+        //定段位
+        $all_ranks = ["一心一意", "再接再厉", "三省吾身", "名扬四海", "学富五车", "六韬三略", "七步才华", "才高八斗", "九天揽月", "十年磨剑"];
+        $max_level = max($question_levels);
+        $rank = "";
+        if ($max_level > $final_level) {
+            $rank = $all_ranks[2 * ($final_level - 1) + 1];
+        } else {
+            $rank = $all_ranks[2 * ($final_level - 1)];
+        }
+
+        if ($final_level == 5){
+            $is_increasing = true;
+            for ($i = 0; $i < count($question_levels) - 1; $i++){
+               if ($question_levels[$i] > $question_levels[$i + 1]) {
+                   $is_increasing = false;
+               }
+            }
+            if ($is_increasing){
+                $rank = $all_ranks[9];
+            } else {
+                $rank = $all_ranks[8];
+            }
+        }
         return [
             "acc_by_level" => $acc_list,
             "time_by_level" => $time_consumed_list,
@@ -273,9 +318,42 @@ class UserControl extends Controller
             "final_acc" => $final_acc,
             "final_time" => $final_time,
             "n_question" => array_sum($n_question_by_level),
-            "n_question_correct" => array_sum($n_correct_question_by_level)
+            "n_question_correct" => array_sum($n_correct_question_by_level),
+            "n_final_question" => $n_correct_question_by_level[$final_level - 1],
+            "rank" => $rank
         ];
     }
 
+    private function set_share_image_info($n_correct, $final_level, $final_correct, $final_time, $rank)
+    {
+        $info = array();
+        $info["name"] = Session::get("user_name");
+        $info["n_correct"] = $n_correct;
+        $info["rank"] = $rank;
+        // 计算超过多少人
+        $n_valid_attempt = Attempt::countAllValidAttempt();
+        $n_bypass = Attempt::countByPass($final_level, $final_correct, $final_time);
+
+        $by_pass_global = $n_bypass / $n_valid_attempt;
+
+        $n_valid_domestic = Attempt::countValidDomestic();
+        $n_bypass_domestic = Attempt::countByPassDomestic($final_level, $final_correct, $final_time);
+        $by_pass_domestic = $n_bypass_domestic / $n_valid_domestic;
+
+        $info["bypass_global"] = $by_pass_global * 100;
+        $info["bypass_domestic"] = $by_pass_domestic * 100;
+        $info["wx_id"] = Session::get("wx_id");
+        Session::set("render_info", $info);
+    }
+
+    public function join_test($final_level, $final_correct, $final_time)
+    {
+        return Attempt::countByPassDomestic($final_level, $final_correct, $final_time);
+    }
+
+    public function duanwei_test()
+    {
+        return $this->summary_history(184);
+    }
 }
 
