@@ -14,7 +14,9 @@ class ImageGen extends Controller
     private $width = 500;
     private $height = 800;
     private $line_height = 40;
-    private $images = ['两弹一星精神.png', '五四精神.png', '井冈山精神.png', '南泥湾精神.png', '延安精神.png', '焦裕禄精神.png', '红船精神.png', '苏区精神.png', '西迁精神.png', '长征精神.png', '雷锋精神.png'];
+    private $images = ['两弹一星精神.png', '五四精神.png', '井冈山精神.png', '南泥湾精神.png',
+        '延安精神.png', '焦裕禄精神.png', '红船精神.png', '苏区精神.png', '西迁精神.png',
+        '长征精神.png', '雷锋精神.png'];
 
     public function share_image()
     {
@@ -34,7 +36,7 @@ class ImageGen extends Controller
         $red = imagecolorallocate($img, 201,0,32);
 
         // 插入图片
-        $imageName = $this->images[rand() % 13];
+        $imageName = $this->images[rand() % 11];
         $achievementImgPath = dirname(__FILE__). "/images/".$imageName;
         $achievementImg = imagecreatefrompng($achievementImgPath);
         $achievementImgInfo = getimagesize($achievementImgPath);
@@ -106,7 +108,7 @@ class ImageGen extends Controller
         $red = imagecolorallocate($img, 201,0,32);
 
         // 插入图片
-        $imageName = $this->images[rand() % 13];
+        $imageName = $this->images[rand() % 11];
         $achievementImgPath = dirname(__FILE__). "/images/".$imageName;
         $achievementImg = imagecreatefrompng($achievementImgPath);
         $achievementImgInfo = getimagesize($achievementImgPath);

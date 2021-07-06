@@ -12,6 +12,7 @@ class TransactionRecord
     private $n_rest_questions = 15;
     private $n_current_level_question = 0;
     private $n_current_level_correct = 0;
+    private $victory = false;
 
     public function __construct($attempt_id, $question)
     {
@@ -36,6 +37,7 @@ class TransactionRecord
                 $this->level_change(+1);
             } else {
                 $this->level_change(0);
+                $this->victory = true;
             }
         } elseif ($this->n_current_level_question - $this->n_current_level_correct >= 2){ //当前等级已做3题 考虑降级或者持平
             if ($this->current_level > 1){
@@ -51,6 +53,10 @@ class TransactionRecord
 
         // 如果机会用光
         if ($this->n_rest_questions == 0){
+            return 0;
+        }
+
+        if ($this->victory) {
             return 0;
         }
         // 如果当前等级不是5

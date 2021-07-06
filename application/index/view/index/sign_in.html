@@ -304,13 +304,27 @@
                 nonceStr: data.nonceStr,
                 signature: data.signature,
                 jsApiList: [
-                    "updateTimelineShareData"
+                    "updateTimelineShareData",
+                    "updateAppMessageShareData"
+
                 ]
             });
             wx.ready(function () {
                 console.log("wx ready");
                 wx.updateTimelineShareData({
-                    title: "庆祝建党100年，快来挑战强国知识5分钟快测吧！请党放心，强国有我！", // 分享标题
+                    title: "庆祝建党100年，快来挑战强国知识5分钟快测吧！不忘初心，强国有我！", // 分享标题
+                    link: 'http://arena.fgb2019.top/index/index/sign_in?from_wx_id=' + wx_id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    imgUrl: 'http://arena.fgb2019.top/static/images/logo-share.jpg', // 分享图标
+                    success: function () {
+                        console.log("share set success");
+                    }, error: function (e) {
+                        console.log("error");
+                        // console.log(e);
+                    }
+                });
+                wx.updateAppMessageShareData({
+                    title: "庆祝建党100年，快来挑战强国知识5分钟快测吧！不忘初心，强国有我！", // 分享标题
+                    desc: "5分钟强国快测，速来挑战！",
                     link: 'http://arena.fgb2019.top/index/index/sign_in?from_wx_id=' + wx_id, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                     imgUrl: 'http://arena.fgb2019.top/static/images/logo-share.jpg', // 分享图标
                     success: function () {

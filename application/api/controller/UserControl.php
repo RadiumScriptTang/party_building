@@ -201,11 +201,11 @@ class UserControl extends Controller
             $attempt->final_acc = $history["final_acc"];
             $attempt->final_time = $history["final_time"];
             $attempt->final_correct = $history["n_question_correct"];
-            $attempt->rank = $history["rank"];
+            $attempt->rank_id = $history["rank"];
             $attempt->save();
-
+            $attempt = Attempt::get($attempt_id);
             // 生成信息session片段
-            $this->set_share_image_info($attempt->final_correct, $attempt->final_level, $attempt->final_correct, $attempt->final_time, $attempt->rank);
+            $this->set_share_image_info($attempt->final_correct, $attempt->final_level, $attempt->final_correct, $attempt->final_time, $attempt->rank_id, $history["rank"]);
 
             // 答题结束 释放record
             Session::set("record", null);
@@ -291,9 +291,9 @@ class UserControl extends Controller
         $max_level = max($question_levels);
         $rank = "";
         if ($max_level > $final_level) {
-            $rank = $all_ranks[2 * ($final_level - 1) + 1];
+            $rank = 2 * ($final_level - 1) + 1;
         } else {
-            $rank = $all_ranks[2 * ($final_level - 1)];
+            $rank = 2 * ($final_level - 1);
         }
 
         if ($final_level == 5){
@@ -304,9 +304,9 @@ class UserControl extends Controller
                }
             }
             if ($is_increasing){
-                $rank = $all_ranks[9];
+                $rank = 9;
             } else {
-                $rank = $all_ranks[8];
+                $rank = 8;
             }
         }
         return [
@@ -324,7 +324,7 @@ class UserControl extends Controller
         ];
     }
 
-    private function set_share_image_info($n_correct, $final_level, $final_correct, $final_time, $rank)
+    private function set_share_image_info($n_correct, $final_level, $final_correct, $final_time, $rank, $rank_id)
     {
         $info = array();
         $info["name"] = Session::get("user_name");
@@ -332,12 +332,12 @@ class UserControl extends Controller
         $info["rank"] = $rank;
         // 计算超过多少人
         $n_valid_attempt = Attempt::countAllValidAttempt();
-        $n_bypass = Attempt::countByPass($final_level, $final_correct, $final_time);
+        $n_bypass = Attempt::countByPass($final_level, $final_correct, $final_time, $rank_id);
 
         $by_pass_global = $n_bypass / $n_valid_attempt;
 
         $n_valid_domestic = Attempt::countValidDomestic();
-        $n_bypass_domestic = Attempt::countByPassDomestic($final_level, $final_correct, $final_time);
+        $n_bypass_domestic = Attempt::countByPassDomestic($final_level, $final_correct, $final_time, $rank_id);
         $by_pass_domestic = $n_bypass_domestic / $n_valid_domestic;
 
         $info["bypass_global"] = $by_pass_global * 100;
@@ -351,9 +351,9 @@ class UserControl extends Controller
         return Attempt::countByPassDomestic($final_level, $final_correct, $final_time);
     }
 
-    public function duanwei_test()
+    public function rank_test()
     {
-        return $this->summary_history(184);
+        return Attempt::get(1);
     }
 }
 
