@@ -31,6 +31,13 @@ class Attempt extends Model
         ]);
     }
 
+    public static function countValidAttempt()
+    {
+        return Attempt::countNum([
+            "is_complete" => true
+        ]);
+    }
+
     public static function countByPass($final_level, $final_correct, $final_time, $rank_id)
     {
         // 先判断 最终等级低于 我的等级
@@ -90,6 +97,7 @@ class Attempt extends Model
         ]);
         return $n_bypass;
     }
+
 
 
     public function getRankIdAttr($rank)
