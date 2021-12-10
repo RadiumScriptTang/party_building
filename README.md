@@ -1,133 +1,37 @@
-ThinkPHP 5.0
+建党百年 强国知识5分钟快测
 ===============
+### 一、项目背景
+为庆祝中国共产党建党100周年，我们开发了“建党百年——强国知识5分钟快测”，以快问快答的形式评测用户的强国知识储备情况。
+本应用在也可以应用于其他问答场景，相比于常见的问答应用，本应用的特色之处在于设计了一种答题等级规则，根据用户的答题情况动态调整用户等级，从而为用户选择难度相当的题目。
 
-[![Total Downloads](https://poser.pugx.org/topthink/think/downloads)](https://packagist.org/packages/topthink/think)
-[![Latest Stable Version](https://poser.pugx.org/topthink/think/v/stable)](https://packagist.org/packages/topthink/think)
-[![Latest Unstable Version](https://poser.pugx.org/topthink/think/v/unstable)](https://packagist.org/packages/topthink/think)
-[![License](https://poser.pugx.org/topthink/think/license)](https://packagist.org/packages/topthink/think)
+本应用属于Web项目，用户方面支持移动端访问答题，管理员方面可由PC端进行访问，包含了常见问答测评应用的基本功能，包括基础的答题功能，用户行为记录功能，计算排名功能，生成答题报告功能，分享功能等。
+本项目基于ThinkPHP框架开发，用户可以轻松克隆本项目部署于Xampp服务器上，并个性化定制自己的答题应用。
 
-ThinkPHP5在保持快速开发和大道至简的核心理念不变的同时，PHP版本要求提升到5.4，对已有的CBD模式做了更深的强化，优化核心，减少依赖，基于全新的架构思想和命名空间实现，是ThinkPHP突破原有框架思路的颠覆之作，其主要特性包括：
+### 二、基本功能
+- 登录功能：用户可以填写自己的信息、地区及单位等信息，首次填写后将在用户端永久保存，再次参与时可以直接登陆。
+- 答题功能：用户登录后即开始答题，每道题目显示剩余的答题时间，时间到后自动提交空白答案。
+- 用户行为记录：用户在答题过程中的行为会被按照时序记录，包括用户回答的题目、每题开始及结束时间等。
+- 计算排名功能：用户答题结束后，系统将根据当前用户的答题等级计算其在所有用户中的排名，等级相同的，答题时间更少的用户将排名更靠前。
+- 生成答题报告：用户答题结束后，根据用户的答题情况生成报告图片，包含了用户的答题结果以及排名，并根据素材渲染海报。
+- 分享功能：用户答题结束后，可以分享自己的答题报告；其他用户可以通过扫描报告上的二维码参与答题。
 
- + 基于命名空间和众多PHP新特性
- + 核心功能组件化
- + 强化路由功能
- + 更灵活的控制器
- + 重构的模型和数据库类
- + 配置文件可分离
- + 重写的自动验证和完成
- + 简化扩展机制
- + API支持完善
- + 改进的Log类
- + 命令行访问支持
- + REST支持
- + 引导文件支持
- + 方便的自动生成定义
- + 真正惰性加载
- + 分布式环境支持
- + 更多的社交类库
+### 三、特色功能
+本项目的特色功能在于设计了独特的答题评级机制，根据用户的实时答题情况，为用户调整题目难度，确保用户能够渐入佳境，从而更准确地判断用户的水平。
 
-> ThinkPHP5的运行环境要求PHP5.4以上。
+下图展示了该特色设计的工作流。我们设置总测试题数为K，且以M题为一个题目组，规定当用户在一个题目组中答对
+N题（N不大于M）后即可提升一个等级；若用户已错题数大于M - N，则等级降低一级。当用户挑战完最高等级的题目组并成功后，即可获得答题报告。此外，若用户答题总数达到预设的K题，也会立即获得答题报告。
+![](https://img-blog.csdnimg.cn/fe5d67e61e834a0786e57befc48cb559.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAUmFkaXVtVGFuZw==)
 
-详细开发文档参考 [ThinkPHP5完全开发手册](http://www.kancloud.cn/manual/thinkphp5)
+### 四、工程架构及规模
+本应用基于ThinkPHP框架构建，采用了MVC的Web应用设计模式，即M——Model， V——View， C——Controller。M对应了数据库模型，方便对数据库建模并进行链式查询；V为前端视图；C为后端控制器，负责实现各类API。本应用的总代码量约为4970行，其分布如下表：
 
-## 目录结构
+类型     | 行数 | 语言
+-------- | ----- | ----
+数据库模型  | 150 | PHP
+应用程序接口  | 790 | PHP
+页面控制器  | 100 | PHP
+页面      | 1400 | HTML/JS
+静态资源文件 | 2530 | CSS/JS/TTF
 
-初始的目录结构如下：
-
-~~~
-www  WEB部署目录（或者子目录）
-├─application           应用目录
-│  ├─common             公共模块目录（可以更改）
-│  ├─module_name        模块目录
-│  │  ├─config.php      模块配置文件
-│  │  ├─common.php      模块函数文件
-│  │  ├─controller      控制器目录
-│  │  ├─model           模型目录
-│  │  ├─view            视图目录
-│  │  └─ ...            更多类库目录
-│  │
-│  ├─command.php        命令行工具配置文件
-│  ├─common.php         公共函数文件
-│  ├─config.php         公共配置文件
-│  ├─route.php          路由配置文件
-│  ├─tags.php           应用行为扩展定义文件
-│  └─database.php       数据库配置文件
-│
-├─public                WEB目录（对外访问目录）
-│  ├─index.php          入口文件
-│  ├─router.php         快速测试文件
-│  └─.htaccess          用于apache的重写
-│
-├─thinkphp              框架系统目录
-│  ├─lang               语言文件目录
-│  ├─library            框架类库目录
-│  │  ├─think           Think类库包目录
-│  │  └─traits          系统Trait目录
-│  │
-│  ├─tpl                系统模板目录
-│  ├─base.php           基础定义文件
-│  ├─console.php        控制台入口文件
-│  ├─convention.php     框架惯例配置文件
-│  ├─helper.php         助手函数文件
-│  ├─phpunit.xml        phpunit配置文件
-│  └─start.php          框架入口文件
-│
-├─extend                扩展类库目录
-├─runtime               应用的运行时目录（可写，可定制）
-├─vendor                第三方类库目录（Composer依赖库）
-├─build.php             自动生成定义文件（参考）
-├─composer.json         composer 定义文件
-├─LICENSE.txt           授权说明文件
-├─README.md             README 文件
-├─think                 命令行入口文件
-~~~
-
-> router.php用于php自带webserver支持，可用于快速测试
-> 切换到public目录后，启动命令：php -S localhost:8888  router.php
-> 上面的目录结构和名称是可以改变的，这取决于你的入口文件和配置参数。
-
-## 命名规范
-
-`ThinkPHP5`遵循PSR-2命名规范和PSR-4自动加载规范，并且注意如下规范：
-
-### 目录和文件
-
-*   目录不强制规范，驼峰和小写+下划线模式均支持；
-*   类库、函数文件统一以`.php`为后缀；
-*   类的文件名均以命名空间定义，并且命名空间的路径和类库文件所在路径一致；
-*   类名和类文件名保持一致，统一采用驼峰法命名（首字母大写）；
-
-### 函数和类、属性命名
-
-*   类的命名采用驼峰法，并且首字母大写，例如 `User`、`UserType`，默认不需要添加后缀，例如`UserController`应该直接命名为`User`；
-*   函数的命名使用小写字母和下划线（小写字母开头）的方式，例如 `get_client_ip`；
-*   方法的命名使用驼峰法，并且首字母小写，例如 `getUserName`；
-*   属性的命名使用驼峰法，并且首字母小写，例如 `tableName`、`instance`；
-*   以双下划线“__”打头的函数或方法作为魔法方法，例如 `__call` 和 `__autoload`；
-
-### 常量和配置
-
-*   常量以大写字母和下划线命名，例如 `APP_PATH`和 `THINK_PATH`；
-*   配置参数以小写字母和下划线命名，例如 `url_route_on` 和`url_convert`；
-
-### 数据表和字段
-
-*   数据表和字段采用小写加下划线方式命名，并注意字段名不要以下划线开头，例如 `think_user` 表和 `user_name`字段，不建议使用驼峰和中文作为数据表字段命名。
-
-## 参与开发
-
-请参阅 [ThinkPHP5 核心框架包](https://github.com/top-think/framework)。
-
-## 版权信息
-
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
-
-本项目包含的第三方源码和二进制文件之版权信息另行标注。
-
-版权所有Copyright © 2006-2018 by ThinkPHP (http://thinkphp.cn)
-
-All rights reserved。
-
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
-
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
+### 五、上线运行情况
+本应用于2021年7月1日正式上线运行，运行周期一周。运行期间没有发生重大程序漏洞或服务宕机事件。运行期间总计服务用户646人，总答题参与次数1712次，总计收集数据上万条。未来的研究中，我们将对这些数据进行分析。
